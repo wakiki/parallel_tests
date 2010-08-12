@@ -1,6 +1,6 @@
 require 'parallel'
 require 'parallel_tests/grouper'
-
+require 'ruby-debug'
 class ParallelTests
   VERSION = File.read( File.join(File.dirname(__FILE__),'..','VERSION') ).strip
 
@@ -96,9 +96,13 @@ class ParallelTests
 
   def self.tests_with_runtime(root)
     tests = find_tests(root)
-    runtime_file = File.join(root,'..','tmp','parallel_profile.log')
+    if File.exists?( File.join(root,'..','tmp','parallel_profile.log') )
+      runtime_file = File.join(root,'..','tmp','parallel_profile.log')
+    else
+      runtime_file = File.join(root,'../..','tmp','parallel_profile.log')
+    end
     lines = File.read(runtime_file).split("\n") rescue []
-
+    
     # use recorded test runtime if we got enough data
     if lines.size * 1.5 > tests.size
       times = Hash.new(1)
@@ -116,7 +120,9 @@ class ParallelTests
     if root.is_a?(Array)
       root
     else
-      Dir["#{root}**/**/*#{self.test_suffix}"]
+      # Dir["#{root}**/**/*#{self.test_suffix}"]
+      # temp hack to include controllers spec as well
+      tests = Dir["#{root}**/**/*#{self.test_suffix}"] + Dir["#{root.gsub('models', 'controllers')}**/**/*#{self.test_suffix}"]
     end
   end
 end
