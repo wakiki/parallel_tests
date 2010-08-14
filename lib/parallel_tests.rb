@@ -102,7 +102,7 @@ class ParallelTests
       runtime_file = File.join(root,'../..','tmp','parallel_profile.log')
     end
     lines = File.read(runtime_file).split("\n") rescue []
-    
+
     # use recorded test runtime if we got enough data
     if lines.size * 1.5 > tests.size
       times = Hash.new(1)
@@ -120,9 +120,9 @@ class ParallelTests
     if root.is_a?(Array)
       root
     else
-      # Dir["#{root}**/**/*#{self.test_suffix}"]
-      # temp hack to include controllers spec as well
-      tests = Dir["#{root}**/**/*#{self.test_suffix}"] + Dir["#{root.gsub('models', 'controllers')}**/**/*#{self.test_suffix}"]
+      Dir["#{root}**/**/*#{self.test_suffix}"]
+      # # temp hack to include controllers spec as well
+      # tests = Dir["#{root}**/**/*#{self.test_suffix}"] + Dir["#{root.gsub('models', 'controllers')}**/**/*#{self.test_suffix}"]
     end
   end
 end
